@@ -1,0 +1,25 @@
+{
+  "name": "nullpobug/django-signing",
+  "description": "Django compatible signing library",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Nullpobug\\Django\\Signing\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nullpobug\\Django\\Signing\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}
