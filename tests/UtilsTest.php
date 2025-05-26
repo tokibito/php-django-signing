@@ -1,4 +1,5 @@
 <?php
+
 namespace Nullpobug\Django\Signing\Tests;
 
 use PHPUnit\Framework\TestCase;

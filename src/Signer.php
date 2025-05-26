@@ -1,6 +1,9 @@
 <?php
+
 namespace Nullpobug\Django\Signing;
 
+use InvalidArgumentException;
+use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 
 class Signer

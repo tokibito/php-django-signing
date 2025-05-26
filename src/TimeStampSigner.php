@@ -1,6 +1,8 @@
 <?php
+
 namespace Nullpobug\Django\Signing;
 
+use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 
 class TimestampSigner extends Signer

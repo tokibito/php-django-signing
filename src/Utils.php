@@ -1,7 +1,9 @@
 <?php
+
 namespace Nullpobug\Django\Signing;
 
-class Utils {
+class Utils
+{
   public static function b62_encode(int $num): string
   {
     if (!is_int($num) || $num < 0) {
@@ -23,12 +25,12 @@ class Utils {
 
     return $result;
   }
- 
+
   public static function b62_decode(string $str): int
   {
     $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     $base = 62;
-  
+
     $num = 0;
     $len = strlen($str);
     for ($i = 0; $i < $len; $i++) {
@@ -38,19 +40,19 @@ class Utils {
       }
       $num = $num * $base + $pos;
     }
-  
+
     return $num;
   }
-  
+
   public static function b64_encode($data): string
   {
     if (!is_string($data)) {
       throw new InvalidArgumentException("Only strings allowed");
     }
-  
+
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
   }
-  
+
   public static function b64_decode($input)
   {
     $remainder = strlen($input) % 4;
@@ -60,7 +62,7 @@ class Utils {
     }
     return base64_decode(strtr($input, '-_', '+/'));
   }
-  
+
   public static function salted_hmac($key_salt, $value, $secret_key, $algorithm = 'sha1')
   {
     if (!is_string($value)) {
