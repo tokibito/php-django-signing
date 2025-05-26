@@ -2,74 +2,119 @@
 
 namespace Nullpobug\Django\Signing;
 
+use InvalidArgumentException;
+
 class Utils
 {
-  public static function b62_encode(int $num): string
-  {
-    if (!is_int($num) || $num < 0) {
-      throw new InvalidArgumentException("Only non-negative integers allowed");
+    /**
+     * Encode a non-negative integer to a base-62 string.
+     * refs: django.core.signing.b62_encode
+     *
+     * @param int $num The non-negative integer to encode.
+     * @return string The base-62 encoded string.
+     * @throws InvalidArgumentException If the input is not a non-negative integer.
+     */
+    public static function b62_encode(int $num): string
+    {
+        if (!is_int($num) || $num < 0) {
+            throw new InvalidArgumentException("Only non-negative integers allowed");
+        }
+
+        $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $base = 62;
+
+        if ($num === 0) {
+            return '0';
+        }
+
+        $result = '';
+        while ($num > 0) {
+            $result = $chars[$num % $base] . $result;
+            $num = intdiv($num, $base);
+        }
+
+        return $result;
     }
 
-    $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    $base = 62;
+    /**
+     * Decode a base-62 encoded string to a non-negative integer.
+     * refs: django.core.signing.b62_decode
+     *
+     *
+     * @param string $str The base-62 encoded string to decode.
+     * @return int The decoded non-negative integer.
+     * @throws InvalidArgumentException If the input contains invalid characters.
+     */
+    public static function b62_decode(string $str): int
+    {
+        $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $base = 62;
 
-    if ($num === 0) {
-      return '0';
+        $num = 0;
+        $len = strlen($str);
+        for ($i = 0; $i < $len; $i++) {
+            $pos = strpos($chars, $str[$i]);
+            if ($pos === false) {
+                throw new InvalidArgumentException("Invalid character in input: " . $str[$i]);
+            }
+            $num = $num * $base + $pos;
+        }
+
+        return $num;
     }
 
-    $result = '';
-    while ($num > 0) {
-      $result = $chars[$num % $base] . $result;
-      $num = intdiv($num, $base);
+    /**
+     * Encode a string to a base64 URL-safe string.
+     * refs: django.core.signing.b64_encode
+     *
+     * @param string $data The string to encode.
+     * @return string The base64 URL-safe encoded string.
+     * @throws InvalidArgumentException If the input is not a string.
+     */
+    public static function b64_encode($data): string
+    {
+        if (!is_string($data)) {
+            throw new InvalidArgumentException("Only strings allowed");
+        }
+
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
-    return $result;
-  }
-
-  public static function b62_decode(string $str): int
-  {
-    $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    $base = 62;
-
-    $num = 0;
-    $len = strlen($str);
-    for ($i = 0; $i < $len; $i++) {
-      $pos = strpos($chars, $str[$i]);
-      if ($pos === false) {
-        throw new InvalidArgumentException("Invalid character in input: " . $str[$i]);
-      }
-      $num = $num * $base + $pos;
+    /**
+     * Decode a base64 URL-safe string to its original string.
+     * refs: django.core.signing.b64_decode
+     *
+     * @param string $input The base64 URL-safe encoded string to decode.
+     * @return string The decoded original string.
+     * @throws InvalidArgumentException If the input is not a valid base64 URL-safe string.
+     */
+    public static function b64_decode($input)
+    {
+        $remainder = strlen($input) % 4;
+        if ($remainder) {
+            $padlen = 4 - $remainder;
+            $input .= str_repeat('=', $padlen);
+        }
+        return base64_decode(strtr($input, '-_', '+/'));
     }
 
-    return $num;
-  }
-
-  public static function b64_encode($data): string
-  {
-    if (!is_string($data)) {
-      throw new InvalidArgumentException("Only strings allowed");
+    /*
+    * Generate a salted HMAC using the specified algorithm.
+    * refs: django.utils.crypto.salted_hmac
+    *
+    * @param string $key_salt Salt to be used in the key derivation.
+    * @param string $value The value to be hashed.
+    * @param string $secret_key The secret key used for HMAC key with the $key_salt
+    * @param string $algorithm The hashing algorithm to use (default is 'sha1').
+    * @return string The resulting HMAC.
+    */
+    public static function salted_hmac($key_salt, $value, $secret_key, $algorithm = 'sha1')
+    {
+        if (!is_string($value)) {
+            $value = strval($value);
+        }
+        $key = hash($algorithm, $key_salt . $secret_key, true);
+        $hmac = hash_hmac($algorithm, $value, $key, true);
+        return $hmac;
     }
-
-    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-  }
-
-  public static function b64_decode($input)
-  {
-    $remainder = strlen($input) % 4;
-    if ($remainder) {
-      $padlen = 4 - $remainder;
-      $input .= str_repeat('=', $padlen);
-    }
-    return base64_decode(strtr($input, '-_', '+/'));
-  }
-
-  public static function salted_hmac($key_salt, $value, $secret_key, $algorithm = 'sha1')
-  {
-    if (!is_string($value)) {
-      $value = strval($value);
-    }
-    $key = hash($algorithm, $key_salt . $secret_key, true);
-    $hmac = hash_hmac($algorithm, $value, $key, true);
-    return $hmac;
-  }
 }

@@ -7,47 +7,47 @@ use Nullpobug\Django\Signing\Utils;
 
 class TimestampSigner extends Signer
 {
-  protected string $timestamp_salt = 'django.core.signing.TimestampSigner';
+    protected string $timestamp_salt = 'django.core.signing.TimestampSigner';
 
-  public function make_timestamp(): string
-  {
-    return Utils::b62_encode(time());
-  }
-
-  public function sign(string $value): string
-  {
-    $timestamp = $this->make_timestamp();
-    $value_with_ts = $value . $this->sep . $timestamp;
-    return parent::sign($value_with_ts);
-  }
-
-  public function unsign(string $signed_value, int|null $max_age = null): string
-  {
-    $result = parent::unsign($signed_value);
-    $parts = explode($this->sep, $result);
-    if (count($parts) !== 2) {
-      throw new RuntimeException("Bad signature format");
+    public function make_timestamp(): string
+    {
+        return Utils::b62_encode(time());
     }
 
-    [$value, $ts_b62] = $parts;
-
-    if ($max_age !== null) {
-      $timestamp = Utils::b62_decode($ts_b62);
-      $age = time() - $timestamp;
-      if ($age > $max_age) {
-        throw new RuntimeException("Signature has expired");
-      }
+    public function sign(string $value): string
+    {
+        $timestamp = $this->make_timestamp();
+        $value_with_ts = $value . $this->sep . $timestamp;
+        return parent::sign($value_with_ts);
     }
 
-    return $value;
-  }
+    public function unsign(string $signed_value, int|null $max_age = null): string
+    {
+        $result = parent::unsign($signed_value);
+        $parts = explode($this->sep, $result);
+        if (count($parts) !== 2) {
+            throw new RuntimeException("Bad signature format");
+        }
 
-  public function timestamp(string $signed_value): int
-  {
-    $parts = explode($this->sep, $signed_value);
-    if (count($parts) !== 3) {
-      throw new RuntimeException("Bad signature format");
+        [$value, $ts_b62] = $parts;
+
+        if ($max_age !== null) {
+            $timestamp = Utils::b62_decode($ts_b62);
+            $age = time() - $timestamp;
+            if ($age > $max_age) {
+                throw new RuntimeException("Signature has expired");
+            }
+        }
+
+        return $value;
     }
-    return Utils::b62_decode($parts[1]);
-  }
+
+    public function timestamp(string $signed_value): int
+    {
+        $parts = explode($this->sep, $signed_value);
+        if (count($parts) !== 3) {
+            throw new RuntimeException("Bad signature format");
+        }
+        return Utils::b62_decode($parts[1]);
+    }
 }
