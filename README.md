@@ -2,13 +2,13 @@
 
 Django compatible signing library for PHP
 
-# Installation
+## Installation
 
 ```bash
 composer require nullpobug/django-signing
 ```
 
-# Usage
+## Usage
 
 ```php
 use Nullpobug\Django\Signing\Api;
@@ -38,6 +38,10 @@ echo print_r($unsigned_value);
 
 Signed value is compatible with Django's signing library, allowing you to share signed data between PHP and Django applications.
 
-# License
+## Website
+
+This project is hosted on [GitHub](https://github.com/tokibito/php-django-signing).
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
