@@ -33,12 +33,13 @@ class Api
      * @param bool $add_timestamp Whether to add a timestamp to the signature.
      * @return string The signed and optionally compressed value.
      */
-    public static function dumps($value, string $secret, string $salt, bool $compress = false, bool $add_timestamp = false): string
+    public static function dumps(mixed $value, string $secret, string $salt, bool $compress = false, bool $add_timestamp = false): string
     {
         $json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 
         if ($compress) {
             $data = zlib_encode($json, ZLIB_ENCODING_DEFLATE);
+            assert($data !== false);
         } else {
             $data = $json;
         }

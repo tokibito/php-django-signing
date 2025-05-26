@@ -26,12 +26,12 @@ class Utils
      * refs: django.core.signing.b62_encode
      *
      * @param int $num The non-negative integer to encode.
+     * @phpstan-param non-negative-int $num
      * @return string The base-62 encoded string.
-     * @throws InvalidArgumentException If the input is not a non-negative integer.
      */
     public static function b62_encode(int $num): string
     {
-        if (!is_int($num) || $num < 0) {
+        if ($num < 0) { // @phpstan-ignore smaller.alwaysFalse
             throw new InvalidArgumentException("Only non-negative integers allowed");
         }
 
@@ -84,14 +84,9 @@ class Utils
      *
      * @param string $data The string to encode.
      * @return string The base64 URL-safe encoded string.
-     * @throws InvalidArgumentException If the input is not a string.
      */
-    public static function b64_encode($data): string
+    public static function b64_encode(string $data): string
     {
-        if (!is_string($data)) {
-            throw new InvalidArgumentException("Only strings allowed");
-        }
-
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
@@ -113,23 +108,20 @@ class Utils
         return base64_decode(strtr($input, '-_', '+/'));
     }
 
-    /*
-    * Generate a salted HMAC using the specified algorithm.
-    * refs: django.utils.crypto.salted_hmac
-    *
-    * @param string $key_salt Salt to be used in the key derivation.
-    * @param string $value The value to be hashed.
-    * @param string $secret_key The secret key used for HMAC key with the $key_salt
-    * @param string $algorithm The hashing algorithm to use (default is 'sha1').
-    * @return string The resulting HMAC.
+    /**
+     * Generate a salted HMAC using the specified algorithm.
+     * refs: django.utils.crypto.salted_hmac
+     *
+     * @param string $key_salt Salt to be used in the key derivation.
+     * @param string $value The value to be hashed.
+     * @param string $secret_key The secret key used for HMAC key with the $key_salt
+     * @param string $algorithm The hashing algorithm to use (default is 'sha1').
+     * @return string The resulting HMAC.
     */
-    public static function salted_hmac($key_salt, $value, $secret_key, $algorithm = 'sha1')
+    public static function salted_hmac(string $key_salt, string $value, string $secret_key, string $algorithm = 'sha1'): string
     {
-        if (!is_string($value)) {
-            $value = strval($value);
-        }
         $key = hash($algorithm, $key_salt . $secret_key, true);
-        $hmac = hash_hmac($algorithm, $value, $key, true);
-        return $hmac;
+
+        return hash_hmac($algorithm, $value, $key, true);
     }
 }
