@@ -11,7 +11,7 @@ class SignerTest extends TestCase
 {
     private string $secret = 'test_secret';
 
-    public function testSignAndUnsign()
+    public function testSignAndUnsign(): void
     {
         $signer = new Signer($this->secret);
         $value = 'hello';
@@ -21,7 +21,7 @@ class SignerTest extends TestCase
         $this->assertEquals($value, $unsigned);
     }
 
-    public function testUnsignWithInvalidSignatureThrows()
+    public function testUnsignWithInvalidSignatureThrows(): void
     {
         $this->expectException(RuntimeException::class);
         $signer = new Signer($this->secret);
@@ -32,14 +32,14 @@ class SignerTest extends TestCase
         $signer->unsign($tampered);
     }
 
-    public function testUnsignWithNoSeparatorThrows()
+    public function testUnsignWithNoSeparatorThrows(): void
     {
         $this->expectException(RuntimeException::class);
         $signer = new Signer($this->secret);
         $signer->unsign('invalidsignedvalue');
     }
 
-    public function testCustomSeparator()
+    public function testCustomSeparator(): void
     {
         $signer = new Signer($this->secret, 'mysalt', '|');
         $value = 'foo';
@@ -49,7 +49,7 @@ class SignerTest extends TestCase
         $this->assertEquals($value, $unsigned);
     }
 
-    public function testCustomSalt()
+    public function testCustomSalt(): void
     {
         $signer1 = new Signer($this->secret, 'salt1');
         $signer2 = new Signer($this->secret, 'salt2');
@@ -59,13 +59,13 @@ class SignerTest extends TestCase
         $this->assertNotEquals($signed1, $signed2);
     }
 
-    public function testSaltWithSeparatorThrows()
+    public function testSaltWithSeparatorThrows(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Signer($this->secret, 'bad:salt');
     }
 
-    public function testDifferentAlgorithm()
+    public function testDifferentAlgorithm(): void
     {
         $signer1 = new Signer($this->secret, 'salt', ':', 'sha256');
         $signer2 = new Signer($this->secret, 'salt', ':', 'sha1');

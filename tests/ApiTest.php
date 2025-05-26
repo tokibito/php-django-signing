@@ -11,7 +11,7 @@ class ApiTest extends TestCase
     private string $secret = 'test_secret';
     private string $salt = 'test_salt';
 
-    public function testDumpsAndLoadsSimpleArray()
+    public function testDumpsAndLoadsSimpleArray(): void
     {
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt);
@@ -19,7 +19,7 @@ class ApiTest extends TestCase
         $this->assertEquals($data, $result);
     }
 
-    public function testDumpsAndLoadsWithCompression()
+    public function testDumpsAndLoadsWithCompression(): void
     {
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt, true);
@@ -27,7 +27,7 @@ class ApiTest extends TestCase
         $this->assertEquals($data, $result);
     }
 
-    public function testDumpsAndLoadsWithTimestamp()
+    public function testDumpsAndLoadsWithTimestamp(): void
     {
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt, false, true);
@@ -35,7 +35,7 @@ class ApiTest extends TestCase
         $this->assertEquals($data, $result);
     }
 
-    public function testDumpsAndLoadsWithCompressionAndTimestamp()
+    public function testDumpsAndLoadsWithCompressionAndTimestamp(): void
     {
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt, true, true);
@@ -43,13 +43,13 @@ class ApiTest extends TestCase
         $this->assertEquals($data, $result);
     }
 
-    public function testLoadsWithInvalidSignatureThrows()
+    public function testLoadsWithInvalidSignatureThrows(): void
     {
         $this->expectException(\RuntimeException::class);
         Api::loads('invalid:signed:value', $this->secret, $this->salt);
     }
 
-    public function testLoadsWithInvalidJsonThrows()
+    public function testLoadsWithInvalidJsonThrows(): void
     {
         // Create a valid signature but tamper with the payload
         $data = ['foo' => 'bar'];
@@ -63,7 +63,7 @@ class ApiTest extends TestCase
         Api::loads($tampered, $this->secret, $this->salt);
     }
 
-    public function testLoadsWithExpiredTimestampThrows()
+    public function testLoadsWithExpiredTimestampThrows(): void
     {
         $data = ['foo' => 'bar'];
         $signed = Api::dumps($data, $this->secret, $this->salt, false, true);

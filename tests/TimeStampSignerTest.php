@@ -10,10 +10,7 @@ use Nullpobug\Django\Signing\Utils;
 
 class TimestampSignerTest extends TestCase
 {
-    /**
-     * @var TimestampSigner
-     */
-    protected $signer;
+    protected TimestampSigner $signer;
 
     public function setUp(): void
     {
@@ -21,7 +18,7 @@ class TimestampSignerTest extends TestCase
         $this->signer = new TimestampSigner('test-secret');
     }
 
-    public function testSignAndUnsign()
+    public function testSignAndUnsign(): void
     {
         $value = 'foobar';
         $signed = $this->signer->sign($value);
@@ -29,7 +26,7 @@ class TimestampSignerTest extends TestCase
         $this->assertEquals($value, $unsigned);
     }
 
-    public function testSignAddsTimestamp()
+    public function testSignAddsTimestamp(): void
     {
         $value = 'hello';
         $signed = $this->signer->sign($value);
@@ -41,7 +38,7 @@ class TimestampSignerTest extends TestCase
         $this->assertNotEmpty($parts[2]);
     }
 
-    public function testUnsignWithMaxAgeValid()
+    public function testUnsignWithMaxAgeValid(): void
     {
         $value = 'bar';
         $signed = $this->signer->sign($value);
@@ -50,11 +47,11 @@ class TimestampSignerTest extends TestCase
         $this->assertEquals($value, $result);
     }
 
-    public function testUnsignWithMaxAgeExpired()
+    public function testUnsignWithMaxAgeExpired(): void
     {
         $value = 'baz';
         // Manually create a signed value with an old timestamp
-        $oldTimestamp = Utils::b62_encode(time() - 1000);
+        $oldTimestamp = Utils::b62_encode(time() - 1000); // @phpstan-ignore argument.type
         $valueWithTs = $value . $this->signer->sep . $oldTimestamp;
         $signed = (new Signer('test-secret'))->sign($valueWithTs);
 
@@ -63,7 +60,7 @@ class TimestampSignerTest extends TestCase
         $this->signer->unsign($signed, 1);
     }
 
-    public function testUnsignBadFormat()
+    public function testUnsignBadFormat(): void
     {
         $badSigned = 'badvalue';
         $this->expectException(RuntimeException::class);
@@ -71,7 +68,7 @@ class TimestampSignerTest extends TestCase
         $this->signer->unsign($badSigned);
     }
 
-    public function testTimestampReturnsCorrectValue()
+    public function testTimestampReturnsCorrectValue(): void
     {
         $value = 'abc';
         $signed = $this->signer->sign($value);
@@ -81,7 +78,7 @@ class TimestampSignerTest extends TestCase
         $this->assertEquals($expectedTimestamp, $actualTimestamp);
     }
 
-    public function testTimestampBadFormat()
+    public function testTimestampBadFormat(): void
     {
         $badSigned = 'foo.bar';
         $this->expectException(RuntimeException::class);
