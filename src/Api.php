@@ -5,7 +5,7 @@ namespace Nullpobug\Django\Signing;
 use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 use Nullpobug\Django\Signing\Signer;
-use Nullpobug\Django\Signing\TimeStampSigner;
+use Nullpobug\Django\Signing\TimestampSigner;
 
 class Api
 {

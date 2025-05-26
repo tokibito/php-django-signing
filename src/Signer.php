@@ -8,7 +8,7 @@ use Nullpobug\Django\Signing\Utils;
 
 class Signer
 {
-    protected string $sep;
+    public string $sep;
     protected string $salt;
     protected string $secret;
     protected string $algorithm;
@@ -38,7 +38,7 @@ class Signer
     {
         $sep_pos = strrpos($signed_value, $this->sep);
         if ($sep_pos === false) {
-            throw new RuntimeException("Bad signature");
+            throw new RuntimeException("Bad signature format");
         }
 
         $value = substr($signed_value, 0, $sep_pos);
