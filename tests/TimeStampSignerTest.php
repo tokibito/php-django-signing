@@ -23,7 +23,7 @@ class TimestampSignerTest extends TestCase
         $value = 'foobar';
         $signed = $this->signer->sign($value);
         $unsigned = $this->signer->unsign($signed);
-        $this->assertEquals($value, $unsigned);
+        $this->assertSame($value, $unsigned);
     }
 
     public function testSignAddsTimestamp(): void
@@ -33,7 +33,7 @@ class TimestampSignerTest extends TestCase
         $parts = explode($this->signer->sep, $signed);
         // Should be value, timestamp, signature
         $this->assertCount(3, $parts);
-        $this->assertEquals($value, $parts[0]);
+        $this->assertSame($value, $parts[0]);
         $this->assertNotEmpty($parts[1]);
         $this->assertNotEmpty($parts[2]);
     }
@@ -44,7 +44,7 @@ class TimestampSignerTest extends TestCase
         $signed = $this->signer->sign($value);
         // Should not throw
         $result = $this->signer->unsign($signed, 10);
-        $this->assertEquals($value, $result);
+        $this->assertSame($value, $result);
     }
 
     public function testUnsignWithMaxAgeExpired(): void
@@ -75,7 +75,7 @@ class TimestampSignerTest extends TestCase
         $parts = explode($this->signer->sep, $signed);
         $expectedTimestamp = Utils::b62_decode($parts[1]);
         $actualTimestamp = $this->signer->timestamp($signed);
-        $this->assertEquals($expectedTimestamp, $actualTimestamp);
+        $this->assertSame($expectedTimestamp, $actualTimestamp);
     }
 
     public function testTimestampBadFormat(): void

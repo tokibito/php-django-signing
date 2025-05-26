@@ -16,7 +16,7 @@ class ApiTest extends TestCase
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt);
         $result = Api::loads($signed, $this->secret, $this->salt);
-        $this->assertEquals($data, $result);
+        $this->assertSame($data, $result);
     }
 
     public function testDumpsAndLoadsWithCompression(): void
@@ -24,7 +24,7 @@ class ApiTest extends TestCase
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt, true);
         $result = Api::loads($signed, $this->secret, $this->salt);
-        $this->assertEquals($data, $result);
+        $this->assertSame($data, $result);
     }
 
     public function testDumpsAndLoadsWithTimestamp(): void
@@ -32,7 +32,7 @@ class ApiTest extends TestCase
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt, false, true);
         $result = Api::loads($signed, $this->secret, $this->salt);
-        $this->assertEquals($data, $result);
+        $this->assertSame($data, $result);
     }
 
     public function testDumpsAndLoadsWithCompressionAndTimestamp(): void
@@ -40,7 +40,7 @@ class ApiTest extends TestCase
         $data = ['foo' => 'bar', 'baz' => 123];
         $signed = Api::dumps($data, $this->secret, $this->salt, true, true);
         $result = Api::loads($signed, $this->secret, $this->salt);
-        $this->assertEquals($data, $result);
+        $this->assertSame($data, $result);
     }
 
     public function testLoadsWithInvalidSignatureThrows(): void

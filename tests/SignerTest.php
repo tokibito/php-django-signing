@@ -18,7 +18,7 @@ class SignerTest extends TestCase
         $signed = $signer->sign($value);
         $this->assertNotEquals($value, $signed);
         $unsigned = $signer->unsign($signed);
-        $this->assertEquals($value, $unsigned);
+        $this->assertSame($value, $unsigned);
     }
 
     public function testUnsignWithInvalidSignatureThrows(): void
@@ -46,7 +46,7 @@ class SignerTest extends TestCase
         $signed = $signer->sign($value);
         $this->assertStringContainsString('|', $signed);
         $unsigned = $signer->unsign($signed);
-        $this->assertEquals($value, $unsigned);
+        $this->assertSame($value, $unsigned);
     }
 
     public function testCustomSalt(): void
