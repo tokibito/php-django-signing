@@ -6,6 +6,12 @@ use InvalidArgumentException;
 use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 
+/**
+ * Signer class for creating and verifying signatures.
+ *
+ * This class provides methods to sign a value by appending a signature,
+ * and to unsign a signed value, verifying the signature.
+ */
 class Signer
 {
     public string $sep;
@@ -24,16 +30,35 @@ class Signer
         $this->algorithm = $algorithm;
     }
 
+    /**
+     * Generate a signature for the given value.
+     *
+     * @param string $value The value to sign.
+     * @return string The base64-encoded HMAC signature.
+     */
     protected function get_signature(string $value): string
     {
         return Utils::b64_encode(Utils::salted_hmac($this->salt . 'signer', $value, $this->secret, $this->algorithm));
     }
 
+    /**
+     * Sign a value by appending a signature.
+     *
+     * @param string $value The value to sign.
+     * @return string The signed value, which is the original value followed by the separator and the signature.
+     */
     public function sign(string $value): string
     {
         return $value . $this->sep . $this->get_signature($value);
     }
 
+    /**
+     * Unsign a signed value, verifying the signature.
+     *
+     * @param string $signed_value The signed value to unsign.
+     * @return string The original value if the signature is valid.
+     * @throws RuntimeException If the signature does not match or the format is invalid.
+     */
     public function unsign(string $signed_value): string
     {
         $sep_pos = strrpos($signed_value, $this->sep);

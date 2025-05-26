@@ -4,6 +4,11 @@ namespace Nullpobug\Django\Signing;
 
 use InvalidArgumentException;
 
+/**
+ * Utility class for encoding and decoding values in various formats.
+ * This class provides methods for base-62 encoding/decoding, base64 URL-safe encoding/decoding,
+ * and generating salted HMACs.
+ */
 class Utils
 {
     /**

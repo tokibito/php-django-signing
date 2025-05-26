@@ -9,6 +9,16 @@ use Nullpobug\Django\Signing\TimestampSigner;
 
 class Api
 {
+    /**
+     * Dumps a value into a signed string.
+     *
+     * @param mixed $value The value to be signed.
+     * @param string $secret The secret key used for signing.
+     * @param string $salt The salt used for signing.
+     * @param bool $compress Whether to compress the JSON data.
+     * @param bool $add_timestamp Whether to add a timestamp to the signature.
+     * @return string The signed and optionally compressed value.
+     */
     public static function dumps($value, string $secret, string $salt, bool $compress = false, bool $add_timestamp = false): string
     {
         $json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
@@ -34,6 +44,16 @@ class Api
         return $signer->sign($b64);
     }
 
+    /**
+     * Loads a signed value, verifying its signature and optionally checking for expiration.
+     *
+     * @param string $signed_value The signed value to be loaded.
+     * @param string $secret The secret key used for signing.
+     * @param string $salt The salt used for signing.
+     * @param int|null $max_age Optional maximum age in seconds for the signature.
+     * @return mixed The original value if the signature is valid.
+     * @throws RuntimeException If the signature is invalid or the data cannot be decoded.
+     */
     public static function loads(string $signed_value, string $secret, string $salt, int|null $max_age = null)
     {
         // Use appropriate signer

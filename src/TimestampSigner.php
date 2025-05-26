@@ -5,6 +5,11 @@ namespace Nullpobug\Django\Signing;
 use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 
+/**
+ * TimestampSigner is a class that extends the Signer class to add timestamp
+ * functionality to signed values. It allows signing values with a timestamp
+ * and unsigning them while checking for expiration based on a maximum age.
+ */
 class TimestampSigner extends Signer
 {
     protected string $timestamp_salt = 'django.core.signing.TimestampSigner';
