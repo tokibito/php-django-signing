@@ -6,6 +6,20 @@ use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 use Nullpobug\Django\Signing\Signer;
 use Nullpobug\Django\Signing\TimestampSigner;
+use function json_decode;
+use function json_encode;
+use function json_last_error;
+use function json_last_error_msg;
+use function strlen;
+use function zlib_decode;
+use function zlib_encode;
+use function substr;
+use function substr_count;
+use const JSON_ERROR_NONE;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+use const ZLIB_ENCODING_DEFLATE;
 
 class Api
 {

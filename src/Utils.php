@@ -3,6 +3,16 @@
 namespace Nullpobug\Django\Signing;
 
 use InvalidArgumentException;
+use function base64_encode;
+use function base64_decode;
+use function hash;
+use function hash_hmac;
+use function intdiv;
+use function rtrim;
+use function str_repeat;
+use function strlen;
+use function strpos;
+use function strtr;
 
 /**
  * Utility class for encoding and decoding values in various formats.

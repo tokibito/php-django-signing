@@ -5,6 +5,12 @@ namespace Nullpobug\Django\Signing;
 use InvalidArgumentException;
 use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
+use function hash_equals;
+use function preg_match;
+use function preg_quote;
+use function strlen;
+use function strrpos;
+use function substr;
 
 /**
  * Signer class for creating and verifying signatures.
