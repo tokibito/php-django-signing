@@ -6,8 +6,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 use function hash_equals;
-use function preg_match;
-use function preg_quote;
+use function str_contains;
 use function strlen;
 use function strrpos;
 use function substr;
@@ -29,7 +28,7 @@ class Signer
         public readonly string $sep = ':',
         protected readonly string $algorithm = 'sha256',
     ) {
-        if (preg_match('/[' . preg_quote($sep, '/') . ']/', $salt)) {
+        if (str_contains(haystack: $salt, needle: $sep)) {
             throw new InvalidArgumentException("Salt cannot contain the separator character");
         }
     }
