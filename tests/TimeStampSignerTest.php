@@ -10,10 +10,7 @@ use Nullpobug\Django\Signing\Utils;
 
 class TimestampSignerTest extends TestCase
 {
-    /**
-     * @var TimestampSigner
-     */
-    protected $signer;
+    protected TimestampSigner $signer;
 
     public function setUp(): void
     {
@@ -21,40 +18,40 @@ class TimestampSignerTest extends TestCase
         $this->signer = new TimestampSigner('test-secret');
     }
 
-    public function testSignAndUnsign()
+    public function testSignAndUnsign(): void
     {
         $value = 'foobar';
         $signed = $this->signer->sign($value);
         $unsigned = $this->signer->unsign($signed);
-        $this->assertEquals($value, $unsigned);
+        $this->assertSame($value, $unsigned);
     }
 
-    public function testSignAddsTimestamp()
+    public function testSignAddsTimestamp(): void
     {
         $value = 'hello';
         $signed = $this->signer->sign($value);
         $parts = explode($this->signer->sep, $signed);
         // Should be value, timestamp, signature
         $this->assertCount(3, $parts);
-        $this->assertEquals($value, $parts[0]);
+        $this->assertSame($value, $parts[0]);
         $this->assertNotEmpty($parts[1]);
         $this->assertNotEmpty($parts[2]);
     }
 
-    public function testUnsignWithMaxAgeValid()
+    public function testUnsignWithMaxAgeValid(): void
     {
         $value = 'bar';
         $signed = $this->signer->sign($value);
         // Should not throw
         $result = $this->signer->unsign($signed, 10);
-        $this->assertEquals($value, $result);
+        $this->assertSame($value, $result);
     }
 
-    public function testUnsignWithMaxAgeExpired()
+    public function testUnsignWithMaxAgeExpired(): void
     {
         $value = 'baz';
         // Manually create a signed value with an old timestamp
-        $oldTimestamp = Utils::b62_encode(time() - 1000);
+        $oldTimestamp = Utils::b62_encode(time() - 1000); // @phpstan-ignore argument.type
         $valueWithTs = $value . $this->signer->sep . $oldTimestamp;
         $signed = (new Signer('test-secret'))->sign($valueWithTs);
 
@@ -63,7 +60,7 @@ class TimestampSignerTest extends TestCase
         $this->signer->unsign($signed, 1);
     }
 
-    public function testUnsignBadFormat()
+    public function testUnsignBadFormat(): void
     {
         $badSigned = 'badvalue';
         $this->expectException(RuntimeException::class);
@@ -71,17 +68,17 @@ class TimestampSignerTest extends TestCase
         $this->signer->unsign($badSigned);
     }
 
-    public function testTimestampReturnsCorrectValue()
+    public function testTimestampReturnsCorrectValue(): void
     {
         $value = 'abc';
         $signed = $this->signer->sign($value);
         $parts = explode($this->signer->sep, $signed);
         $expectedTimestamp = Utils::b62_decode($parts[1]);
         $actualTimestamp = $this->signer->timestamp($signed);
-        $this->assertEquals($expectedTimestamp, $actualTimestamp);
+        $this->assertSame($expectedTimestamp, $actualTimestamp);
     }
 
-    public function testTimestampBadFormat()
+    public function testTimestampBadFormat(): void
     {
         $badSigned = 'foo.bar';
         $this->expectException(RuntimeException::class);

@@ -6,6 +6,20 @@ use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
 use Nullpobug\Django\Signing\Signer;
 use Nullpobug\Django\Signing\TimestampSigner;
+use function json_decode;
+use function json_encode;
+use function json_last_error;
+use function json_last_error_msg;
+use function strlen;
+use function zlib_decode;
+use function zlib_encode;
+use function substr;
+use function substr_count;
+use const JSON_ERROR_NONE;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+use const ZLIB_ENCODING_DEFLATE;
 
 class Api
 {
@@ -19,12 +33,13 @@ class Api
      * @param bool $add_timestamp Whether to add a timestamp to the signature.
      * @return string The signed and optionally compressed value.
      */
-    public static function dumps($value, string $secret, string $salt, bool $compress = false, bool $add_timestamp = false): string
+    public static function dumps(mixed $value, string $secret, string $salt, bool $compress = false, bool $add_timestamp = false): string
     {
         $json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 
         if ($compress) {
             $data = zlib_encode($json, ZLIB_ENCODING_DEFLATE);
+            assert($data !== false);
         } else {
             $data = $json;
         }

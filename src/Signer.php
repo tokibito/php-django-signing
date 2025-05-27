@@ -5,6 +5,11 @@ namespace Nullpobug\Django\Signing;
 use InvalidArgumentException;
 use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
+use function hash_equals;
+use function str_contains;
+use function strlen;
+use function strrpos;
+use function substr;
 
 /**
  * Signer class for creating and verifying signatures.
@@ -14,20 +19,18 @@ use Nullpobug\Django\Signing\Utils;
  */
 class Signer
 {
-    public string $sep;
-    protected string $salt;
-    protected string $secret;
-    protected string $algorithm;
-
-    public function __construct(string $secret, string $salt = 'django.core.signing.Signer', string $sep = ':', string $algorithm = 'sha256')
-    {
-        if (preg_match('/[' . preg_quote($sep, '/') . ']/', $salt)) {
+    /**
+     * @phpstan-param non-empty-string $sep
+     */
+    public function __construct(
+        protected readonly string $secret,
+        protected readonly string $salt = 'django.core.signing.Signer',
+        public readonly string $sep = ':',
+        protected readonly string $algorithm = 'sha256',
+    ) {
+        if (str_contains(haystack: $salt, needle: $sep)) {
             throw new InvalidArgumentException("Salt cannot contain the separator character");
         }
-        $this->secret = $secret;
-        $this->salt = $salt;
-        $this->sep = $sep;
-        $this->algorithm = $algorithm;
     }
 
     /**

@@ -4,6 +4,9 @@ namespace Nullpobug\Django\Signing;
 
 use RuntimeException;
 use Nullpobug\Django\Signing\Utils;
+use function count;
+use function explode;
+use function time;
 
 /**
  * TimestampSigner is a class that extends the Signer class to add timestamp
